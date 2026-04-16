@@ -1,4 +1,4 @@
-var CACHE = 'gach-calc-v1';
+var CACHE = 'gach-calc-v2';
 var FILES = [
   './index.html',
   './manifest.json',
