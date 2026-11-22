@@ -2,372 +2,297 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1d4ed8">
+  <!-- Pinch-zoom is allowed on purpose (helps users with weak eyesight) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1b5e35">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="গাছ ক্যালকুলেটর">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.svg">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <title>গোল গাছ মাপার ক্যালকুলেটর</title>
-  <!-- Bengali font with offline fallback -->
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ── Self-hosted Bengali font (works offline, no Google request) ── */
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:400; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-400-normal.woff2) format('woff2');
+      unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+1CD0,U+1CD2,U+1CD5-1CD6,U+1CD8,U+1CE1,U+1CEA,U+1CED,U+1CF2,U+1CF5-1CF7,U+200C-200D,U+20B9,U+25CC,U+A8F1; }
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:600; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-600-normal.woff2) format('woff2');
+      unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+1CD0,U+1CD2,U+1CD5-1CD6,U+1CD8,U+1CE1,U+1CEA,U+1CED,U+1CF2,U+1CF5-1CF7,U+200C-200D,U+20B9,U+25CC,U+A8F1; }
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:700; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-700-normal.woff2) format('woff2');
+      unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+1CD0,U+1CD2,U+1CD5-1CD6,U+1CD8,U+1CE1,U+1CEA,U+1CED,U+1CF2,U+1CF5-1CF7,U+200C-200D,U+20B9,U+25CC,U+A8F1; }
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:400; font-display:swap;
+      src:url(fonts/hind-siliguri-latin-400-normal.woff2) format('woff2');
+      unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:600; font-display:swap;
+      src:url(fonts/hind-siliguri-latin-600-normal.woff2) format('woff2');
+      unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+    @font-face { font-family:'Hind Siliguri'; font-style:normal; font-weight:700; font-display:swap;
+      src:url(fonts/hind-siliguri-latin-700-normal.woff2) format('woff2');
+      unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+    /* Bengali digits ০–৯ always use the bold file: in the lighter weights of this
+       font "১" is drawn with a hook and is easy to misread as "৯". */
+    @font-face { font-family:'BnDigits'; font-weight:400; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-700-normal.woff2) format('woff2'); unicode-range:U+09E6-09EF; }
+    @font-face { font-family:'BnDigits'; font-weight:600; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-700-normal.woff2) format('woff2'); unicode-range:U+09E6-09EF; }
+    @font-face { font-family:'BnDigits'; font-weight:700; font-display:swap;
+      src:url(fonts/hind-siliguri-bengali-700-normal.woff2) format('woff2'); unicode-range:U+09E6-09EF; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --green: #1d4ed8;
-      --green-btn: #2563eb;
-      --green-lt: #dbeafe;
-      --green-pale: #eff6ff;
-      --red: #dc2626;
-      --red-pale: #fef2f2;
-      --text: #0f172a;
-      --muted: #475569;
-      --border: #cbd5e1;
-      --bg: #f8fafc;
-      --white: rgba(255, 255, 255, 0.86);
-      --surface-solid: #ffffff;
-      --focus: #3b82f6;
-      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
-      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.12);
-      --radius: 16px;
-      --radius-sm: 12px;
-      --space-1: 8px;
-      --space-2: 16px;
-      --space-3: 24px;
-      --space-4: 32px;
-      --edit-highlight: #fef9c3;
+      --green:      #1b5e35;
+      --green-btn:  #237a43;
+      --green-lt:   #e3f2e8;
+      --green-pale: #f0f8f3;
+      --red:        #b3261e;
+      --red-pale:   #fdeeed;
+      --text:       #111;
+      --muted:      #36443b;
+      --border:     #a9cbb5;
+      --field:      #5f8f6f;   /* darker input border: readable in sunlight */
+      --bg:         #eef5f0;
+      --white:      #fff;
+      --font: 'BnDigits', 'Hind Siliguri', 'Noto Sans Bengali', Arial, sans-serif;
     }
-    [data-theme="dark"] {
-      --green: #60a5fa;
-      --green-btn: #3b82f6;
-      --green-lt: #1e3a8a;
-      --green-pale: #1e293b;
-      --red: #f87171;
-      --red-pale: #450a0a;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --border: #334155;
-      --bg: #020617;
-      --white: rgba(15, 23, 42, 0.74);
-      --surface-solid: #0f172a;
-      --focus: #60a5fa;
-      --shadow-sm: 0 4px 12px rgba(2, 6, 23, 0.4);
-      --shadow-md: 0 14px 36px rgba(2, 6, 23, 0.5);
-      --edit-highlight: rgba(146, 64, 14, .35);
-    }
+    html { -webkit-text-size-adjust: 100%; }
     html, body {
-      font-family: 'Hind Siliguri', 'Noto Sans Bengali', Arial, sans-serif;
-      background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.2), transparent 42%), var(--bg);
-      color: var(--text);
+      font-family: var(--font); font-size: 18px;
+      background: var(--bg); color: var(--text);
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      overscroll-behavior: none;
-      scroll-behavior: smooth;
+      overscroll-behavior-y: none;   /* no accidental pull-to-refresh */
     }
-    body { padding: 0 0 var(--space-4); min-height: 100vh; transition: background .25s ease, color .25s ease; }
-    button, input { transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease, color .2s ease; }
-    button, input, .install-close { min-height: 44px; }
-    button:focus-visible, input:focus-visible, .install-close:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-    .app { padding: 0 var(--space-1); }
+    body { padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
+    body.locked { overflow: hidden; }
+    button, input { font-family: var(--font); }
+    button { cursor: pointer; }
 
     .header {
-      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
-      color: #fff;
-      padding: 14px;
-      margin: 10px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-md);
-      position: sticky;
-      top: 10px;
-      z-index: 5;
-      backdrop-filter: blur(8px);
+      background: var(--green); color: #fff; text-align: center;
+      padding: calc(14px + env(safe-area-inset-top)) 14px 12px;
     }
-    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .header h1 { font-size: 22px; font-weight: 700; line-height: 1.2; text-align: left; }
-    .theme-toggle {
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-      padding: 8px 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      min-width: 104px;
-      min-height: 44px;
-    }
-    .theme-toggle:active { transform: scale(.98); }
+    .header h1 { font-size: 23px; font-weight: 700; line-height: 1.25; }
 
     .section {
-      background: var(--white);
-      margin: 0 2px var(--space-2);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      backdrop-filter: blur(8px);
+      background: var(--white); margin: 12px 10px 0;
+      border-radius: 12px; border: 1.5px solid var(--border); overflow: hidden;
     }
     .sec-head {
-      background: linear-gradient(120deg, rgba(37, 99, 235, 0.16), transparent);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--green);
+      background: var(--green-pale); border-bottom: 1.5px solid var(--border);
+      padding: 10px 14px; font-size: 19px; font-weight: 700; color: var(--green);
     }
+    .sec-sub { font-size: 16px; font-weight: 600; color: var(--muted); margin-top: 2px; }
 
-    .inp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-1); padding: var(--space-2) var(--space-2) var(--space-1); }
-    .field { position: relative; }
-    .input-shell { position: relative; }
-    .input-shell label {
-      position: absolute;
-      left: 12px;
-      top: 14px;
-      padding: 0 6px;
-      border-radius: 6px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-      pointer-events: none;
-      transition: transform .18s ease, top .18s ease, color .18s ease, background .18s ease;
+    /* ── Text inputs (type=text so Bengali digits work) ── */
+    .num-input {
+      width: 100%; min-width: 0;
+      font-size: 30px; font-weight: 700; color: var(--text);
+      background: #fff; border: 2.5px solid var(--field);
+      border-radius: 10px; padding: 10px 8px; outline: none; text-align: center;
+      -webkit-appearance: none; appearance: none;
     }
-    .input-shell input:focus + label,
-    .input-shell input:not(:placeholder-shown) + label {
-      top: -10px;
-      background: var(--surface-solid);
-      color: var(--green);
-    }
-    .field input[type="number"] {
-      width: 100%; font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 28px; font-weight: 700; color: var(--text);
-      background: var(--green-pale); border: 2px solid var(--border);
-      border-radius: var(--radius-sm); padding: 15px 10px 11px; outline: none;
-      -webkit-appearance: none; appearance: none; text-align: center;
-    }
-    .field input:focus { border-color: var(--green); background: var(--surface-solid); box-shadow: 0 0 0 4px rgba(59, 130, 246, .18); }
-    .field input.err   { border-color: var(--red);   background: var(--red-pale); }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .num-input::placeholder { color: #9aa9a0; font-weight: 600; }
+    .num-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(35,122,67,.25); }
+    .num-input.err { border-color: var(--red); background: var(--red-pale); }
+
+    /* ── Measurement inputs ── */
+    .inp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 12px 12px; }
+    .m-label { display: block; font-size: 20px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+    .inp-grid .num-input { font-size: 32px; padding: 12px 8px; }
 
     .err-msg {
-      display: none; font-size: 16px; font-weight: 600; color: var(--red);
-      background: var(--red-pale); border-radius: var(--radius-sm); padding: 10px 12px;
-      margin: 0 var(--space-2) var(--space-1); line-height: 1.4; border: 1px solid rgba(220, 38, 38, .35);
+      display: none; font-size: 18px; font-weight: 600; color: var(--red);
+      background: var(--red-pale); border: 1.5px solid #e9b2ad; border-radius: 8px;
+      padding: 10px 12px; margin: 0 12px 10px; line-height: 1.4;
     }
     .err-msg.show { display: block; }
 
     .live-result {
-      margin: 0 var(--space-2) var(--space-1);
-      background: linear-gradient(90deg, var(--green-lt), rgba(147, 197, 253, .35));
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      display: flex; align-items: center;
-      justify-content: space-between; gap: 8px;
+      margin: 0 12px 10px; background: var(--green-lt); border-radius: 10px;
+      padding: 10px 14px; display: flex; align-items: center;
+      justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
-    .lr-label { font-size: 17px; font-weight: 700; color: var(--green); flex-shrink: 0; }
-    .lr-value { font-size: 28px; font-weight: 700; color: var(--green); text-align: right; }
-    .lr-value.muted { font-size: 17px; color: var(--muted); font-weight: 400; }
+    .lr-label { font-size: 19px; font-weight: 700; color: var(--green); }
+    .lr-value { font-size: 28px; font-weight: 700; color: var(--green); text-align: right; margin-left: auto; }
+    .lr-value.muted { font-size: 18px; color: var(--muted); font-weight: 600; }
 
     .btn-add {
-      width: calc(100% - 32px);
-      margin: 0 var(--space-2) var(--space-2);
-      padding: 14px 10px;
-      background: linear-gradient(135deg, var(--green-btn), #0ea5e9);
-      color: #fff;
-      font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 22px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-      overflow: hidden;
+      width: calc(100% - 24px); margin: 0 12px 14px; padding: 16px 10px; min-height: 64px;
+      background: var(--green-btn); color: #fff;
+      font-size: 23px; font-weight: 700; border: none; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background .12s, transform .1s;
     }
-    .btn-add::before {
-      content: "";
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.36);
-      transform: scale(1);
-      opacity: 0;
-    }
-    .btn-add:active:not(:disabled)::before { opacity: 1; transform: scale(18); transition: transform .35s ease, opacity .35s ease; }
-    .btn-add:active:not(:disabled) { transform: translateY(1px) scale(.99); }
-    .btn-add:disabled { background: #94a3b8; box-shadow: none; }
-    .btn-add.ready { animation: pulse 1.4s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{box-shadow: var(--shadow-sm)} 50%{box-shadow: 0 0 0 8px rgba(59, 130, 246, .18), var(--shadow-sm)} }
+    .btn-add:active { background: var(--green); transform: scale(.98); }
     .plus-c {
-      width: 30px; height: 30px; flex-shrink: 0;
+      width: 32px; height: 32px; flex-shrink: 0;
       background: rgba(255,255,255,.25); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1;
+      display: flex; align-items: center; justify-content: center; font-size: 26px; line-height: 1;
     }
 
-    .steps-wrap { max-height: 260px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .steps-wrap:empty::after {
-      content: 'এখনো কোনো গাছ যোগ হয়নি'; display: block; text-align: center;
-      color: var(--muted); font-size: 17px; padding: 18px;
-    }
-    .step-row {
-      display: flex; align-items: center; padding: 10px 12px;
-      border-bottom: 1px solid var(--border); gap: 10px; animation: pop .18s ease;
-    }
-    @keyframes pop { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
-    .step-row:last-child { border-bottom: none; }
-    .step-row.editing { background: var(--edit-highlight); flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
-    .step-num {
-      width: 30px; height: 30px; flex-shrink: 0;
-      background: var(--green-lt); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 700; color: var(--green);
-    }
-    .row-action-btn {
-      flex-shrink: 0;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .row-action-edit {
-      margin-right: 4px;
-      border: 1px solid var(--border);
-      background: var(--green-lt);
-      color: var(--green);
-      font-size: 16px;
-    }
-    .row-action-del {
-      border: 1px solid rgba(220, 38, 38, .25);
-      background: var(--red-pale);
-      color: var(--red);
-      font-size: 18px;
-    }
-    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1 1 100%; }
-    .edit-grid input {
-      width: 100%; font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 24px; font-weight: 700; color: var(--text);
-      background: var(--surface-solid); border: 2px solid #f4d03f;
-      border-radius: 8px; padding: 8px 10px; outline: none; text-align: center;
-      -webkit-appearance: none; appearance: none;
-    }
-    .edit-grid input:focus { border-color: var(--green); }
-    .edit-actions { display: flex; gap: 6px; flex: 1 1 100%; }
-    .edit-save {
-      flex: 1; padding: 10px; background: var(--green-btn); color: #fff;
-      font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;
-    }
-    .edit-cancel {
-      flex: 1; padding: 10px; background: var(--surface-solid); color: var(--muted);
-      font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 18px; font-weight: 700; border: 2px solid var(--border); border-radius: 8px; cursor: pointer;
-    }
-
-    .sum-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: rgba(219, 234, 254, .35); }
-    [data-theme="dark"] .sum-row { background: rgba(30, 58, 138, .35); }
+    /* ── Totals ── */
+    .sum-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1.5px solid var(--border); }
     .sum-cell { padding: 12px 8px; text-align: center; }
-    .sum-cell:first-child { border-right: 1px solid var(--border); }
-    .sum-label { font-size: 13px; color: var(--muted); font-weight: 600; }
-    .sum-val { font-size: 24px; font-weight: 700; color: var(--green); margin-top: 2px; }
+    .sum-cell:first-child { border-right: 1.5px solid var(--border); }
+    .sum-label { font-size: 17px; color: var(--muted); font-weight: 700; }
+    .sum-val { font-size: 28px; font-weight: 700; color: var(--green); margin-top: 2px; }
 
-    .price-wrap { padding: 16px 16px 0; }
-    .price-shell { position: relative; }
-    .price-label {
-      position: absolute;
-      left: 12px;
-      top: 14px;
-      padding: 0 6px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--muted);
-      background: transparent;
-      pointer-events: none;
-      transition: transform .18s ease, top .18s ease, color .18s ease, background .18s ease;
+    .field-wrap { padding: 12px 12px 0; }
+    .field-label { font-size: 19px; font-weight: 700; color: var(--green); margin-bottom: 6px; display: block; }
+    .field-label small { font-size: 16px; color: var(--muted); font-weight: 600; }
+    .text-input {
+      width: 100%; font-size: 20px; font-weight: 600; color: var(--text);
+      background: #fff; border: 2.5px solid var(--field); border-radius: 10px;
+      padding: 12px; outline: none; -webkit-appearance: none; appearance: none;
     }
-    .price-input {
-      width: 100%; font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 28px; font-weight: 700; color: var(--text);
-      background: var(--green-pale); border: 2px solid var(--border);
-      border-radius: var(--radius-sm); padding: 15px 10px 11px; outline: none; text-align: center;
-      -webkit-appearance: none; appearance: none;
-    }
-    .price-input:focus,
-    .price-input:not(:placeholder-shown) { border-color: var(--green); background: var(--surface-solid); }
-    .price-input:focus + .price-label,
-    .price-input:not(:placeholder-shown) + .price-label { top: -10px; background: var(--surface-solid); color: var(--green); }
-    input[type=number].price-input::-webkit-inner-spin-button,
-    input[type=number].price-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .text-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(35,122,67,.25); }
+    .rate-err { display: none; color: var(--red); font-size: 17px; font-weight: 600; margin-top: 6px; }
+    .rate-err.show { display: block; }
 
     .final-bar {
-      margin: 10px 16px 16px;
-      background: linear-gradient(135deg, var(--green-btn), #0ea5e9);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      box-shadow: var(--shadow-sm);
+      margin: 12px 12px 0; background: var(--green); border-radius: 10px; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
-    .fb-label { font-size: 18px; font-weight: 700; color: rgba(255,255,255,.85); }
-    .fb-value { font-size: 28px; font-weight: 700; color: #fff; }
+    .fb-label { font-size: 20px; font-weight: 700; color: rgba(255,255,255,.9); }
+    .fb-value { font-size: 30px; font-weight: 700; color: #fff; margin-left: auto; }
 
-    .btn-clear {
-      width: calc(100% - 20px); margin: 10px 10px 0; padding: 15px 10px;
-      background: var(--surface-solid); color: var(--red);
-      font-family: 'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size: 20px; font-weight: 700; border: 2px solid rgba(220, 38, 38, .32); border-radius: var(--radius-sm); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      box-shadow: var(--shadow-sm);
+    .btn-share {
+      width: calc(100% - 24px); margin: 12px; min-height: 58px; padding: 12px;
+      background: #fff; color: var(--green); border: 2.5px solid var(--green-btn); border-radius: 12px;
+      font-size: 21px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.3;
     }
-    .btn-clear:active { background: var(--red-pale); transform: scale(.98); }
+    .btn-share small { font-size: 16px; font-weight: 600; color: var(--muted); }
+    .btn-share-wide { width: calc(100% - 20px); margin: 12px 10px 0; min-height: 64px; }
+    .btn-share:active { background: var(--green-lt); }
 
-    .overlay { display:none; position:fixed; inset:0; background:rgba(2,6,23,.6); z-index:100; align-items:flex-end; backdrop-filter: blur(2px); }
+    /* ── Tree list (grows with the page – no inner scroll box) ── */
+    .empty { text-align: center; color: var(--muted); font-size: 18px; padding: 22px 14px; }
+    .tree-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
+      padding: 12px; border-bottom: 1.5px solid #dcebe1;
+    }
+    .tree-row:last-child { border-bottom: none; }
+    .tree-row.flash { animation: flash 2s ease; }
+    @keyframes flash { 0%,40% { background: #fff1a8; } 100% { background: transparent; } }
+    .tr-head { display: flex; align-items: center; gap: 8px; }
+    .tr-num {
+      min-width: 34px; height: 34px; padding: 0 6px; flex-shrink: 0;
+      background: var(--green); color: #fff; border-radius: 17px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700;
+    }
+    .tr-wood { font-size: 24px; font-weight: 700; color: var(--green); line-height: 1.2; }
+    .tr-wood small { font-size: 16px; font-weight: 700; }
+    .tr-size { font-size: 17px; color: var(--muted); font-weight: 600; margin-top: 6px; line-height: 1.45; }
+    .tr-btns { display: flex; flex-direction: column; gap: 10px; }
+    .tr-btns button {
+      min-width: 118px; min-height: 48px; padding: 6px 10px; border-radius: 10px;
+      font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-edit { background: var(--green-lt); color: var(--green); border: 2px solid var(--border); }
+    .btn-del  { background: #fff; color: var(--red); border: 2px solid #e9b2ad; }
+    .btn-edit:active { background: #cfe8d7; }
+    .btn-del:active  { background: var(--red-pale); }
+
+    .tree-row.editing { display: block; background: #fffbe6; }
+    .ed-title { font-size: 19px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+    .ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ed-grid label { font-size: 16px; font-weight: 700; color: var(--muted); display: block; }
+    .ed-grid .num-input { font-size: 24px; padding: 8px 4px; margin-top: 4px; border-color: #c9a227; }
+    .ed-live { font-size: 18px; font-weight: 700; color: var(--green); margin: 10px 0 0; }
+    .tree-row.editing .err-msg { margin: 10px 0 0; }
+    .ed-actions { display: flex; gap: 10px; margin-top: 12px; }
+    .ed-actions button { flex: 1; min-height: 52px; border-radius: 10px; font-size: 19px; font-weight: 700; }
+    .ed-save { background: var(--green-btn); color: #fff; border: none; }
+    .ed-cancel { background: #fff; color: var(--muted); border: 2px solid var(--border); }
+
+    /* ── Bottom buttons ── */
+    .btn-wide {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: calc(100% - 20px); margin: 12px 10px 0; padding: 14px 10px; min-height: 60px;
+      font-size: 20px; font-weight: 700; border-radius: 12px; background: #fff;
+    }
+    .btn-history { color: var(--green); border: 2.5px solid var(--green-btn); }
+    .btn-new { color: #8a4b00; border: 2.5px solid #e0b36b; }
+    .btn-history:active { background: var(--green-lt); }
+    .btn-new:active { background: #fff6e8; }
+
+    /* ── Toast / undo bar (top of screen so the keyboard never hides it) ── */
+    .toast {
+      position: fixed; left: 10px; right: 10px; top: calc(10px + env(safe-area-inset-top)); z-index: 300;
+      background: #163f26; color: #fff; border-radius: 12px; padding: 12px 14px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.3);
+      display: flex; align-items: center; gap: 10px;
+      transform: translateY(-160%); transition: transform .2s ease; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); pointer-events: auto; }
+    .toast-msg { flex: 1; font-size: 18px; font-weight: 600; line-height: 1.35; }
+    .toast-btn {
+      flex-shrink: 0; min-height: 48px; padding: 6px 14px; border-radius: 10px; border: none;
+      background: #fff; color: var(--green); font-size: 18px; font-weight: 700;
+    }
+
+    /* ── Confirm bottom sheet ── */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:250; align-items:flex-end; }
     .overlay.show { display:flex; }
-    .sheet { background:var(--surface-solid); width:100%; border-radius:20px 20px 0 0; padding:24px 18px 40px; text-align:center; border-top:1px solid var(--border); }
-    .sheet h2 { font-size:22px; font-weight:700; margin-bottom:8px; }
-    .sheet p  { font-size:18px; color:var(--muted); margin-bottom:22px; line-height:1.5; }
-    .sheet-btns { display:flex; flex-direction:column; gap:10px; }
-    .sheet-yes {
-      padding:16px; background:var(--red); color:#fff;
-      font-family:'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size:22px; font-weight:700; border:none; border-radius:10px; cursor:pointer;
-    }
-    .sheet-no {
-      padding:16px; background:var(--green-pale); color:var(--green);
-      font-family:'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size:22px; font-weight:700; border:2px solid var(--border); border-radius:10px; cursor:pointer;
-    }
+    .sheet { background:#fff; width:100%; border-radius:20px 20px 0 0; padding:24px 18px calc(30px + env(safe-area-inset-bottom)); text-align:center; }
+    .sheet h2 { font-size:23px; font-weight:700; margin-bottom:10px; }
+    .sheet p  { font-size:19px; color:var(--muted); margin-bottom:22px; line-height:1.5; }
+    .sheet-btns { display:flex; flex-direction:column; gap:12px; }
+    .sheet-yes, .sheet-no { padding:16px; min-height:60px; font-size:21px; font-weight:700; border-radius:12px; }
+    .sheet-yes { background:var(--green-btn); color:#fff; border:none; }
+    .sheet-yes.danger { background:var(--red); }
+    .sheet-no { background:var(--green-pale); color:var(--green); border:2px solid var(--border); }
 
-    /* install banner */
+    /* ── Full-screen views (history list / history detail) ── */
+    .view {
+      display: none; position: fixed; inset: 0; z-index: 200; background: var(--bg);
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      padding-bottom: calc(30px + env(safe-area-inset-bottom));
+    }
+    .view.show { display: block; }
+    .view-bar {
+      position: sticky; top: 0; z-index: 1; background: var(--green); color: #fff;
+      display: flex; align-items: center; gap: 10px;
+      padding: calc(10px + env(safe-area-inset-top)) 10px 10px;
+    }
+    .btn-back {
+      min-height: 48px; padding: 6px 14px; border-radius: 10px; border: 2px solid rgba(255,255,255,.6);
+      background: rgba(255,255,255,.15); color: #fff; font-size: 19px; font-weight: 700; flex-shrink: 0;
+    }
+    .view-title { font-size: 21px; font-weight: 700; }
+    .hist-card {
+      display: block; width: calc(100% - 20px); margin: 12px 10px 0; text-align: left;
+      background: #fff; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; position: relative;
+    }
+    .hist-card:active { background: var(--green-pale); }
+    .hc-name { font-size: 20px; font-weight: 700; color: var(--text); padding-right: 80px; }
+    .hc-date { font-size: 16px; color: var(--muted); margin-top: 2px; }
+    .hc-sum  { font-size: 18px; font-weight: 700; color: var(--green); margin-top: 6px; }
+    .hc-go {
+      position: absolute; right: 12px; top: 14px; font-size: 17px; font-weight: 700; color: var(--green);
+      background: var(--green-lt); border-radius: 8px; padding: 4px 10px;
+    }
+    .detail-lines { padding: 6px 14px 10px; }
+    .detail-line { font-size: 18px; padding: 8px 0; border-bottom: 1px solid #dcebe1; line-height: 1.4; }
+    .detail-line:last-child { border-bottom: none; }
+    .detail-line b { color: var(--green); }
+    .btn-danger-outline { color: var(--red); border: 2.5px solid #e9b2ad; }
+
+    /* ── Install banner ── */
     .install-bar {
-      display:none; background:#fef9c3; border-bottom:1px solid #f4d03f;
-      padding:10px 14px; align-items:center; justify-content:space-between; gap:8px; margin: 0 10px; border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      display:none; background:#fffbe6; border-bottom:1.5px solid #f4d03f;
+      padding:10px 12px; align-items:center; justify-content:space-between; gap:8px;
     }
-    [data-theme="dark"] .install-bar { background: #1f2937; border-bottom-color: #475569; }
     .install-bar.show { display:flex; }
-    .install-bar span { font-size:15px; font-weight:600; color:#7d6608; flex:1; }
-    [data-theme="dark"] .install-bar span { color: #fbbf24; }
-    .install-btn {
-      padding:8px 14px; background:var(--green); color:#fff;
-      font-family:'Hind Siliguri','Noto Sans Bengali',Arial,sans-serif;
-      font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; flex-shrink:0;
-    }
-    .install-close { background:none; border:none; font-size:20px; color:var(--muted); cursor:pointer; flex-shrink:0; min-width: 44px; }
-    @media (max-width: 390px) {
-      .inp-grid { grid-template-columns: 1fr; }
-    }
+    .install-bar span { font-size:18px; font-weight:600; color:#6b5606; flex:1; }
+    .install-btn { min-height:44px; padding:6px 14px; background:var(--green); color:#fff; font-size:18px; font-weight:700; border:none; border-radius:8px; flex-shrink:0; }
+    .install-close { min-width:44px; min-height:44px; background:none; border:none; font-size:22px; color:var(--muted); flex-shrink:0; }
   </style>
 </head>
 <body>
@@ -375,50 +300,40 @@
   <!-- Install prompt banner -->
   <div class="install-bar" id="installBar">
     <span>📲 হোম স্ক্রিনে ইনস্টল করুন</span>
-    <button class="install-btn" id="installBtn">ইনস্টল</button>
-    <button class="install-close" onclick="document.getElementById('installBar').classList.remove('show')">✕</button>
+    <button type="button" class="install-btn" id="installBtn">ইনস্টল</button>
+    <button type="button" class="install-close" id="installClose" aria-label="বন্ধ করুন">✕</button>
   </div>
 
   <div class="header">
-    <div class="header-row">
-      <h1>🌳 গোল গাছ মাপার ক্যালকুলেটর</h1>
-      <button type="button" class="theme-toggle" id="themeToggle" aria-label="থিম পরিবর্তন">
-        <span id="themeIcon">🌙</span>
-        <span id="themeText">ডার্ক</span>
-      </button>
-    </div>
+    <h1>🌳 গোল গাছ মাপার ক্যালকুলেটর</h1>
   </div>
 
-  <main class="app">
+  <!-- ── 1. Measurements ── -->
   <div class="section">
     <div class="sec-head">📏 গাছের মাপ দিন</div>
     <div class="inp-grid">
       <div class="field">
-        <div class="input-shell">
-          <input type="number" id="inp1" placeholder=" " inputmode="decimal" oninput="onInput()" autocomplete="off">
-          <label for="inp1">বেড় (ইঞ্চি)</label>
-        </div>
+        <label class="m-label" for="inG">বেড় (ইঞ্চি)</label>
+        <input type="text" class="num-input" id="inG" placeholder="০" inputmode="decimal" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div class="field">
-        <div class="input-shell">
-          <input type="number" id="inp2" placeholder=" " inputmode="decimal" oninput="onInput()" autocomplete="off">
-          <label for="inp2">লম্বা (ফুট)</label>
-        </div>
+        <label class="m-label" for="inF">লম্বা (ফুট)</label>
+        <input type="text" class="num-input" id="inF" placeholder="০" inputmode="decimal" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
     </div>
-    <div class="err-msg" id="errMsg"></div>
+    <div class="err-msg" id="errMsg" role="alert"></div>
     <div class="live-result">
       <span class="lr-label">কাঠের পরিমাণ</span>
-      <span class="lr-value muted" id="liveVal">— ঘনফুট</span>
+      <span class="lr-value muted" id="liveVal" aria-live="polite">— ঘনফুট</span>
     </div>
-    <button class="btn-add" id="addBtn" onclick="addTree()" disabled>
+    <button type="button" class="btn-add" id="addBtn">
       <span class="plus-c">+</span> গাছটি যোগ করুন
     </button>
   </div>
 
+  <!-- ── 2. Totals and price ── -->
   <div class="section">
-    <div class="sec-head">📋 গাছের তালিকা</div>
-    <div class="steps-wrap" id="stepsList"></div>
+    <div class="sec-head">🧮 মোট হিসাব</div>
     <div class="sum-row">
       <div class="sum-cell">
         <div class="sum-label">মোট গাছ</div>
@@ -429,226 +344,605 @@
         <div class="sum-val" id="sumWood">০.০০০</div>
       </div>
     </div>
-  </div>
-
-  <div class="section">
-    <div class="sec-head">💵 দর হিসাব</div>
-    <div class="price-wrap">
-      <div class="price-shell">
-        <input type="number" class="price-input" id="priceInp" placeholder=" " inputmode="decimal" oninput="calcPrice()" autocomplete="off">
-        <label class="price-label" for="priceInp">প্রতি ঘনফুট দর (টাকা)</label>
-      </div>
+    <div class="field-wrap">
+      <label class="field-label" for="rate">প্রতি ঘনফুট দর (টাকা)</label>
+      <input type="text" class="num-input" id="rate" placeholder="০" inputmode="decimal" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="rate-err" id="rateErr">⚠️ শুধু সংখ্যা লিখুন</div>
     </div>
     <div class="final-bar">
       <span class="fb-label">মোট দাম</span>
       <span class="fb-value" id="finalVal">৳ —</span>
     </div>
+    <div style="height:12px"></div>
   </div>
 
-  <button class="btn-clear" onclick="askClear()">🗑️ সব মুছে নতুন শুরু করুন</button>
-  </main>
+  <!-- ── 3. Tree list ── -->
+  <div class="section">
+    <div class="sec-head">
+      📋 গাছের তালিকা
+      <div class="sec-sub" id="listHint">নতুন যোগ করা গাছ সবার উপরে থাকে</div>
+    </div>
+    <div id="treeList"></div>
+  </div>
 
+  <!-- ── 4. Optional name for this list ── -->
+  <div class="section">
+    <div class="field-wrap" style="padding-bottom:12px">
+      <label class="field-label" for="lotName">📝 হিসাবের নাম <small>(ইচ্ছা হলে)</small></label>
+      <input type="text" class="text-input" id="lotName" placeholder="যেমন: ক্রেতার নাম বা গ্রাম" enterkeyhint="done" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- ── 5. Share ── -->
+  <button type="button" class="btn-share btn-share-wide" id="shareBtn">📤 হিসাব পাঠান<small>WhatsApp বা SMS-এ</small></button>
+
+  <button type="button" class="btn-wide btn-history" id="historyBtn">📂 আগের হিসাব দেখুন</button>
+  <button type="button" class="btn-wide btn-new" id="newBtn">🆕 নতুন হিসাব শুরু করুন</button>
+
+  <!-- Toast / undo bar -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-msg" id="toastMsg"></span>
+    <button type="button" class="toast-btn" id="toastBtn"></button>
+  </div>
+
+  <!-- Confirm sheet -->
   <div class="overlay" id="overlay">
-    <div class="sheet">
-      <h2>নিশ্চিত করুন</h2>
-      <p>সব তথ্য মুছে যাবে।<br>আবার শুরু করতে চান?</p>
+    <div class="sheet" id="sheet">
+      <h2 id="sheetTitle"></h2>
+      <p id="sheetText"></p>
       <div class="sheet-btns">
-        <button class="sheet-yes" onclick="doClear()">হ্যাঁ, মুছে দিন</button>
-        <button class="sheet-no"  onclick="closeSheet()">না, ফিরে যান</button>
+        <button type="button" class="sheet-yes" id="sheetYes"></button>
+        <button type="button" class="sheet-no" id="sheetNo">না, ফিরে যান</button>
       </div>
     </div>
   </div>
 
+  <!-- History list view -->
+  <div class="view" id="viewHistory">
+    <div class="view-bar">
+      <button type="button" class="btn-back" data-back>← ফিরে যান</button>
+      <span class="view-title">আগের হিসাব</span>
+    </div>
+    <div id="histList"></div>
+  </div>
+
+  <!-- History detail view -->
+  <div class="view" id="viewDetail">
+    <div class="view-bar">
+      <button type="button" class="btn-back" data-back>← ফিরে যান</button>
+      <span class="view-title" id="detailTitle"></span>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+
 <script>
-  // ── Service Worker ──
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./sw.js').catch(function(){});
+(function () {
+  'use strict';
+
+  // ── Settings ──
+  var STORE_KEY = 'gachCalc.current.v2';   // the list being worked on now
+  var HIST_KEY  = 'gachCalc.history.v2';   // saved older lists
+  var HIST_MAX  = 100;
+  var BN = '০১২৩৪৫৬৭৮৯';
+  var MONTHS = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+
+  function $(id) { return document.getElementById(id); }
+
+  // ── Number helpers ──
+  function toBn(s)    { return String(s).replace(/[0-9]/g, function (d) { return BN.charAt(+d); }); }
+  function toLatin(s) { return String(s).replace(/[০-৯]/g, function (c) { return String(BN.indexOf(c)); }); }
+  // 1234567 -> 12,34,567 (lakh grouping)
+  function groupLakh(s) {
+    if (s.length <= 3) return s;
+    return s.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + s.slice(-3);
+  }
+  function fmtInt(n)   { return toBn(groupLakh(String(Math.round(n)))); }
+  // wood is stored as whole thousandths of a cubic foot, so totals are exact
+  function fmtMilli(m) { return toBn(groupLakh(String(Math.floor(m / 1000))) + '.' + ('00' + (m % 1000)).slice(-3)); }
+  function trimNum(n)  { return String(Math.round(n * 100) / 100); }
+  function fmtNum(n)   { var p = trimNum(n).split('.'); return toBn(groupLakh(p[0]) + (p[1] ? '.' + p[1] : '')); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
 
-  // ── Install prompt ──
-  var deferredPrompt=null;
-  window.addEventListener('beforeinstallprompt',function(e){
-    e.preventDefault(); deferredPrompt=e;
-    document.getElementById('installBar').classList.add('show');
+  // Accepts Bengali or English digits; comma = decimal point for measurements
+  function parseNum(raw, commaIsDecimal) {
+    var s = toLatin(raw == null ? '' : raw).replace(/\s+/g, '');
+    s = commaIsDecimal ? s.replace(/,/g, '.') : s.replace(/,/g, '');
+    if (s === '') return { empty: true };
+    if (s === '.' || !/^\d*\.?\d*$/.test(s)) return { bad: true };
+    return { val: parseFloat(s) };
+  }
+
+  // Quarter-girth formula: girth(in)² × length(ft) ÷ 2304  → cubic feet
+  function calcMilli(g, ft) { return Math.round(g * g * ft / 2304 * 1000); }
+
+  function lenText(t) { return fmtNum(t.ft) + ' ফুট'; }
+  function totalMilli(trees) { var s = 0; for (var i = 0; i < trees.length; i++) s += trees[i].m; return s; }
+  function rateOf(raw) { var r = parseNum(raw, false); return (r.val > 0) ? r.val : null; }
+  function priceOf(trees, rateRaw) {
+    var r = rateOf(rateRaw);
+    if (r === null || !trees.length) return null;
+    return Math.round(totalMilli(trees) * r / 1000);
+  }
+  function fmtDate(ms) {
+    var d = new Date(ms), h = d.getHours(), m = d.getMinutes();
+    var part = h < 4 ? 'রাত' : h < 12 ? 'সকাল' : h < 15 ? 'দুপুর' : h < 18 ? 'বিকাল' : h < 20 ? 'সন্ধ্যা' : 'রাত';
+    return toBn(d.getDate()) + ' ' + MONTHS[d.getMonth()] + ' ' + toBn(d.getFullYear()) +
+      ', ' + part + ' ' + toBn(h % 12 || 12) + ':' + toBn(('0' + m).slice(-2));
+  }
+
+  // Validates one set of measurements (used by the main form and by edit)
+  function readMeasure(gRaw, fRaw) {
+    var g = parseNum(gRaw, true), f = parseNum(fRaw, true);
+    var r = { ok: false, empty: false, missing: false, err: '', mark: { g: false, f: false } };
+    if (g.empty && f.empty) {
+      r.empty = true; r.err = 'আগে বেড় ও লম্বা লিখুন'; r.mark.g = r.mark.f = true; return r;
+    }
+    if (g.bad || f.bad) {
+      r.err = 'শুধু সংখ্যা লিখুন'; r.mark = { g: !!g.bad, f: !!f.bad }; return r;
+    }
+    if (g.empty || f.empty) {
+      r.missing = true; r.mark.g = !!g.empty; r.mark.f = !!f.empty;
+      r.err = g.empty ? 'বেড় কত ইঞ্চি লিখুন' : 'লম্বা কত ফুট লিখুন';
+      return r;
+    }
+    if (g.val === 0) { r.err = 'বেড় শূন্য হতে পারে না'; r.mark.g = true; return r; }
+    if (f.val === 0) { r.err = 'লম্বা শূন্য হতে পারে না'; r.mark.f = true; return r; }
+    r.ok = true; r.g = g.val; r.ft = f.val; r.m = calcMilli(g.val, f.val);
+    return r;
+  }
+
+  // ── Storage (everything is saved after every change) ──
+  var state = { trees: [], rate: '', name: '' };
+  var editIndex = -1;
+
+  function cleanTrees(arr) {
+    var out = [];
+    (Array.isArray(arr) ? arr : []).forEach(function (t) {
+      if (!t) return;
+      var g = +t.g, ft = +t.ft || 0;
+      if (+t.inch > 0) ft = Math.round((ft + t.inch / 12) * 100) / 100;   // inch value saved by the earlier test version
+      if (g > 0 && ft > 0) out.push({ g: g, ft: ft, m: calcMilli(g, ft) });
+    });
+    return out;
+  }
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem(STORE_KEY));
+      if (s) state = { trees: cleanTrees(s.trees), rate: s.rate || '', name: s.name || '' };
+    } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; } catch (e) { return false; }
+  }
+  function loadHist() {
+    try { var h = JSON.parse(localStorage.getItem(HIST_KEY)); return Array.isArray(h) ? h : []; } catch (e) { return []; }
+  }
+  function saveHist(h) {
+    try { localStorage.setItem(HIST_KEY, JSON.stringify(h.slice(0, HIST_MAX))); return true; } catch (e) { return false; }
+  }
+  function makeLot(src) {
+    return { id: Date.now() + '-' + Math.floor(Math.random() * 1e6), at: Date.now(),
+             name: src.name || '', rate: src.rate || '', trees: src.trees.slice() };
+  }
+
+  // ── Toast / undo bar ──
+  var toastTimer = null, toastAction = null;
+  function toast(msg, opt) {
+    opt = opt || {};
+    $('toastMsg').textContent = msg;
+    var btn = $('toastBtn');
+    if (opt.action) { btn.textContent = opt.action; btn.style.display = ''; toastAction = opt.onAction; }
+    else { btn.style.display = 'none'; toastAction = null; }
+    $('toast').classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, opt.ms || 2800);
+  }
+  function hideToast() { $('toast').classList.remove('show'); toastAction = null; }
+  $('toastBtn').addEventListener('click', function (e) {
+    e.stopPropagation(); var f = toastAction; hideToast(); if (f) f();
   });
-  document.getElementById('installBtn').addEventListener('click',function(){
-    if(!deferredPrompt)return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function(){
-      deferredPrompt=null;
-      document.getElementById('installBar').classList.remove('show');
+  $('toast').addEventListener('click', hideToast);
+  function buzz() { try { if (navigator.vibrate) navigator.vibrate(40); } catch (e) {} }
+
+  // ── Layers: sheet + full-screen views. The phone's Back button closes them. ──
+  var layers = [], afterPop = null, navOK = true;
+  try { history.replaceState({ depth: 0 }, ''); } catch (e) { navOK = false; }
+  function updateLock() {
+    document.body.classList.toggle('locked', !!document.querySelector('.view.show'));
+  }
+  function openLayer(closeFn) {
+    layers.push(closeFn);
+    if (navOK) { try { history.pushState({ depth: layers.length }, ''); } catch (e) { navOK = false; } }
+    updateLock();
+  }
+  function closeLayersTo(depth) {
+    while (layers.length > depth) { var f = layers.pop(); f(); }
+    updateLock();
+  }
+  function goBack(n, then) {
+    n = Math.min(n || 1, layers.length);
+    if (n <= 0) { if (then) then(); return; }
+    if (!navOK) { closeLayersTo(layers.length - n); if (then) then(); return; }
+    afterPop = then || null;
+    history.go(-n);
+  }
+  window.addEventListener('popstate', function (e) {
+    var d = (e.state && typeof e.state.depth === 'number') ? e.state.depth : 0;
+    closeLayersTo(Math.min(d, layers.length));
+    var f = afterPop; afterPop = null; if (f) f();
+  });
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-back]')) goBack(1);
+  });
+
+  // ── Confirm sheet ──
+  var sheetYesFn = null;
+  function confirmSheet(o) {
+    $('sheetTitle').textContent = o.title;
+    $('sheetText').textContent = o.text;
+    $('sheetYes').textContent = o.yes;
+    $('sheetYes').className = 'sheet-yes' + (o.danger ? ' danger' : '');
+    sheetYesFn = o.onYes;
+    $('overlay').classList.add('show');
+    openLayer(function () { $('overlay').classList.remove('show'); });
+  }
+  $('sheetYes').addEventListener('click', function () {
+    var f = sheetYesFn; sheetYesFn = null;
+    if (f) f(); else goBack(1);
+  });
+  $('sheetNo').addEventListener('click', function () { sheetYesFn = null; goBack(1); });
+  $('overlay').addEventListener('click', function (e) { if (e.target === this) { sheetYesFn = null; goBack(1); } });
+
+  // ── Main measurement form ──
+  var inG = $('inG'), inF = $('inF');
+
+  function setLive(m, ph) {
+    var el = $('liveVal');
+    if (m === null) { el.className = 'lr-value muted'; el.textContent = ph || '— ঘনফুট'; }
+    else { el.className = 'lr-value'; el.textContent = fmtMilli(m) + ' ঘনফুট'; }
+  }
+  function markMain(mark) {
+    inG.classList.toggle('err', !!mark.g); inF.classList.toggle('err', !!mark.f);
+  }
+  function showErr(m) { var e = $('errMsg'); e.textContent = '⚠️ ' + m; e.classList.add('show'); }
+  function hideErr()  { $('errMsg').classList.remove('show'); }
+
+  function onMainInput() {
+    var r = readMeasure(inG.value, inF.value);
+    markMain({}); hideErr();
+    if (r.ok)      { setLive(r.m); return; }
+    if (r.empty)   { setLive(null); return; }
+    if (r.missing) { setLive(null, 'বাকি ঘর পূরণ করুন'); return; }
+    setLive(null); showErr(r.err); markMain(r.mark);
+  }
+
+  function tryAdd() {
+    var r = readMeasure(inG.value, inF.value);
+    if (!r.ok) {
+      showErr(r.err); markMain(r.mark);
+      (r.mark.g || !r.mark.f ? inG : inF).focus();
+      return;
+    }
+    state.trees.push({ g: r.g, ft: r.ft, m: r.m });
+    var n = state.trees.length;
+    inG.value = inF.value = '';
+    markMain({}); hideErr(); setLive(null);
+    editIndex = -1;
+    renderAll();
+    flashRow(n - 1);
+    toast('✓ ' + toBn(n) + ' নম্বর গাছ যোগ হয়েছে — ' + fmtMilli(r.m) + ' ঘনফুট');
+    buzz();
+    inG.focus();
+  }
+
+  function isEnter(e) { return e.key === 'Enter' || e.keyCode === 13; }
+  [inG, inF].forEach(function (el) { el.addEventListener('input', onMainInput); });
+  inG.addEventListener('keydown', function (e) { if (isEnter(e)) { e.preventDefault(); inF.focus(); } });
+  inF.addEventListener('keydown', function (e) { if (isEnter(e)) { e.preventDefault(); tryAdd(); } });
+  $('addBtn').addEventListener('click', tryAdd);
+
+  // ── Tree list ──
+  function rowHTML(i) {
+    var t = state.trees[i];
+    return '<div class="tree-row" data-i="' + i + '">' +
+      '<div class="tr-info">' +
+        '<div class="tr-head"><span class="tr-num">' + toBn(i + 1) + '</span>' +
+          '<span class="tr-wood">' + fmtMilli(t.m) + ' <small>ঘনফুট</small></span></div>' +
+        '<div class="tr-size">বেড় ' + fmtNum(t.g) + ' ইঞ্চি<br>লম্বা ' + lenText(t) + '</div>' +
+      '</div>' +
+      '<div class="tr-btns">' +
+        '<button type="button" class="btn-edit" data-act="edit" data-i="' + i + '">✏️ ঠিক করুন</button>' +
+        '<button type="button" class="btn-del" data-act="del" data-i="' + i + '">✕ মুছুন</button>' +
+      '</div>' +
+    '</div>';
+  }
+  function editRowHTML(i) {
+    var t = state.trees[i];
+    var attrs = ' inputmode="decimal" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false"';
+    return '<div class="tree-row editing" data-i="' + i + '">' +
+      '<div class="ed-title">' + toBn(i + 1) + ' নম্বর গাছের মাপ ঠিক করুন</div>' +
+      '<div class="ed-grid">' +
+        '<label>বেড় (ইঞ্চি)<input type="text" class="num-input e-g"' + attrs + ' value="' + toBn(trimNum(t.g)) + '"></label>' +
+        '<label>লম্বা (ফুট)<input type="text" class="num-input e-f"' + attrs + ' value="' + toBn(trimNum(t.ft)) + '"></label>' +
+      '</div>' +
+      '<div class="ed-live"></div>' +
+      '<div class="err-msg ed-err" role="alert"></div>' +
+      '<div class="ed-actions">' +
+        '<button type="button" class="ed-save" data-act="save" data-i="' + i + '">✔ সেভ করুন</button>' +
+        '<button type="button" class="ed-cancel" data-act="cancel" data-i="' + i + '">বাতিল</button>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderList() {
+    var html = '';
+    for (var i = state.trees.length - 1; i >= 0; i--) html += (i === editIndex) ? editRowHTML(i) : rowHTML(i);
+    $('treeList').innerHTML = html || '<div class="empty">এখনো কোনো গাছ যোগ হয়নি</div>';
+    $('listHint').style.display = state.trees.length > 1 ? '' : 'none';
+    if (editIndex >= 0) updateEditLive();
+  }
+  function rowEl(i) { return $('treeList').querySelector('.tree-row[data-i="' + i + '"]'); }
+  function flashRow(i) { var r = rowEl(i); if (r) { r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); } }
+
+  function readEdit() {
+    var row = rowEl(editIndex); if (!row) return null;
+    return { row: row, r: readMeasure(row.querySelector('.e-g').value, row.querySelector('.e-f').value) };
+  }
+  function updateEditLive() {
+    var x = readEdit(); if (!x) return;
+    var row = x.row, r = x.r, live = row.querySelector('.ed-live'), err = row.querySelector('.ed-err');
+    ['.e-g', '.e-f'].forEach(function (s) { row.querySelector(s).classList.remove('err'); });
+    err.classList.remove('show');
+    live.textContent = r.ok ? 'নতুন পরিমাণ: ' + fmtMilli(r.m) + ' ঘনফুট' : '';
+  }
+  function startEdit(i) {
+    editIndex = i; renderList();
+    var row = rowEl(i);
+    if (row) { try { row.scrollIntoView({ block: 'center' }); } catch (e) {} row.querySelector('.e-g').focus(); }
+  }
+  function saveEdit() {
+    var x = readEdit(); if (!x) return;
+    var row = x.row, r = x.r;
+    if (!r.ok) {
+      var err = row.querySelector('.ed-err');
+      err.textContent = '⚠️ ' + r.err; err.classList.add('show');
+      row.querySelector('.e-g').classList.toggle('err', !!r.mark.g);
+      row.querySelector('.e-f').classList.toggle('err', !!r.mark.f);
+      return;
+    }
+    var i = editIndex;
+    state.trees[i] = { g: r.g, ft: r.ft, m: r.m };
+    editIndex = -1; renderAll(); flashRow(i);
+    toast('✓ ' + toBn(i + 1) + ' নম্বর গাছের মাপ ঠিক করা হয়েছে');
+  }
+  function cancelEdit() { editIndex = -1; renderList(); }
+
+  function delTree(i) {
+    editIndex = -1;
+    var removed = state.trees.splice(i, 1)[0];
+    renderAll();
+    toast(toBn(i + 1) + ' নম্বর গাছ মুছে ফেলা হয়েছে', {
+      action: '↩ ফিরিয়ে আনুন', ms: 8000,
+      onAction: function () {
+        var at = Math.min(i, state.trees.length);
+        state.trees.splice(at, 0, removed);
+        editIndex = -1; renderAll(); flashRow(at);
+        toast('✓ গাছটি আবার তালিকায় ফিরে এসেছে');
+      }
+    });
+  }
+
+  var list = $('treeList');
+  list.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var i = +b.getAttribute('data-i'), act = b.getAttribute('data-act');
+    if (act === 'edit') startEdit(i);
+    else if (act === 'del') delTree(i);
+    else if (act === 'save') saveEdit();
+    else if (act === 'cancel') cancelEdit();
+  });
+  list.addEventListener('input', function (e) { if (e.target.closest('.editing')) updateEditLive(); });
+  list.addEventListener('keydown', function (e) {
+    if (isEnter(e) && e.target.closest('.editing')) { e.preventDefault(); saveEdit(); }
+  });
+
+  // ── Totals, rate, name ──
+  function renderTotals() {
+    $('sumTrees').textContent = toBn(state.trees.length);
+    $('sumWood').textContent = fmtMilli(totalMilli(state.trees));
+    var rr = parseNum(state.rate, false);
+    $('rate').classList.toggle('err', !!rr.bad);
+    $('rateErr').classList.toggle('show', !!rr.bad);
+    var p = priceOf(state.trees, state.rate);
+    $('finalVal').textContent = p === null ? '৳ —' : '৳ ' + fmtInt(p);
+  }
+  function renderHistBtn() {
+    var n = loadHist().length;
+    $('historyBtn').textContent = '📂 আগের হিসাব দেখুন' + (n ? ' (' + toBn(n) + 'টি)' : '');
+  }
+  function renderAll() {
+    renderList(); renderTotals(); renderHistBtn();
+    if (!save()) toast('⚠️ ফোনে জায়গা কম — হিসাব সেভ করা যাচ্ছে না', { ms: 5000 });
+  }
+  $('rate').addEventListener('input', function () { state.rate = this.value; renderTotals(); save(); });
+  $('lotName').addEventListener('input', function () { state.name = this.value; save(); });
+  [$('rate'), $('lotName')].forEach(function (el) {
+    el.addEventListener('keydown', function (e) { if (isEnter(e)) { e.preventDefault(); el.blur(); } });
+  });
+
+  // ── Share ──
+  function shareTextFor(lot, when) {
+    var L = ['🌳 গাছের হিসাব'];
+    if (lot.name) L.push('নাম: ' + lot.name);
+    L.push('তারিখ: ' + fmtDate(when), '');
+    lot.trees.forEach(function (t, i) {
+      L.push(toBn(i + 1) + ') বেড় ' + fmtNum(t.g) + ' ইঞ্চি, লম্বা ' + lenText(t) + ' = ' + fmtMilli(t.m) + ' ঘনফুট');
+    });
+    L.push('', 'মোট গাছ: ' + toBn(lot.trees.length) + 'টি', 'মোট কাঠ: ' + fmtMilli(totalMilli(lot.trees)) + ' ঘনফুট');
+    var p = priceOf(lot.trees, lot.rate);
+    if (p !== null) L.push('দর: প্রতি ঘনফুট ৳ ' + fmtNum(rateOf(lot.rate)), 'মোট দাম: ৳ ' + fmtInt(p));
+    return L.join('\n');
+  }
+  function legacyCopy(t) {
+    var ta = document.createElement('textarea');
+    ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); return ok;
+  }
+  function copyText(text) {
+    function done() { toast('✓ হিসাব কপি হয়েছে — WhatsApp বা SMS-এ পেস্ট করুন', { ms: 4500 }); }
+    function fail() { toast('⚠️ পাঠানো যায়নি'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text) ? done() : fail(); });
+    } else { legacyCopy(text) ? done() : fail(); }
+  }
+  function doShare(text) {
+    if (navigator.share) {
+      navigator.share({ text: text }).catch(function (err) { if (!err || err.name !== 'AbortError') copyText(text); });
+    } else copyText(text);
+  }
+  $('shareBtn').addEventListener('click', function () {
+    if (!state.trees.length) { toast('আগে অন্তত একটি গাছ যোগ করুন'); return; }
+    doShare(shareTextFor(state, Date.now()));
+  });
+
+  // ── New list (current list is kept in history, never thrown away) ──
+  function clearForm() { inG.value = inF.value = ''; onMainInput(); }
+  function doNewLot() {
+    var h = loadHist(); h.unshift(makeLot(state));
+    if (!saveHist(h)) { toast('⚠️ জমা রাখা যায়নি, তাই কিছু মোছা হয়নি', { ms: 5000 }); return; }
+    state.trees = []; state.name = ''; editIndex = -1;          // rate is kept for the next list
+    $('lotName').value = ''; clearForm(); renderAll();
+    window.scrollTo(0, 0);
+    toast('✓ আগের হিসাব জমা হয়েছে। এখন নতুন হিসাব শুরু করুন।', { ms: 3500 });
+  }
+  $('newBtn').addEventListener('click', function () {
+    if (!state.trees.length) { clearForm(); toast('তালিকায় কোনো গাছ নেই — নতুন হিসাব শুরু করতে পারেন'); return; }
+    confirmSheet({
+      title: 'নতুন হিসাব শুরু করবেন?',
+      text: 'এখনকার হিসাবটি (' + toBn(state.trees.length) + 'টি গাছ) "আগের হিসাব"-এ জমা থাকবে। পরে আবার দেখতে পারবেন।',
+      yes: 'হ্যাঁ, নতুন শুরু করুন',
+      onYes: function () { goBack(1, doNewLot); }
     });
   });
-  window.addEventListener('appinstalled',function(){
-    document.getElementById('installBar').classList.remove('show');
+
+  // ── History views ──
+  var detailId = null;
+  function renderHistory() {
+    var h = loadHist(), html = '';
+    h.forEach(function (l) {
+      var trees = cleanTrees(l.trees), p = priceOf(trees, l.rate);
+      html += '<button type="button" class="hist-card" data-id="' + esc(l.id) + '">' +
+        '<div class="hc-name">' + esc(l.name || 'নাম ছাড়া হিসাব') + '</div>' +
+        '<div class="hc-date">' + fmtDate(l.at) + '</div>' +
+        '<div class="hc-sum">' + toBn(trees.length) + 'টি গাছ · ' + fmtMilli(totalMilli(trees)) + ' ঘনফুট' +
+          (p !== null ? '<br>মোট দাম ৳ ' + fmtInt(p) : '') + '</div>' +
+        '<span class="hc-go">দেখুন ›</span>' +
+      '</button>';
+    });
+    $('histList').innerHTML = html ||
+      '<div class="empty">এখনো কোনো আগের হিসাব নেই।<br>"নতুন হিসাব শুরু করুন" চাপলে এখনকার হিসাব এখানে জমা হয়।</div>';
+  }
+  function findLot(id) { var h = loadHist(); for (var i = 0; i < h.length; i++) if (h[i].id === id) return { h: h, i: i }; return null; }
+
+  function renderDetail(id) {
+    var f = findLot(id); if (!f) return false;
+    var l = f.h[f.i], trees = cleanTrees(l.trees), p = priceOf(trees, l.rate), lines = '';
+    trees.forEach(function (t, i) {
+      lines += '<div class="detail-line">' + toBn(i + 1) + ') বেড় ' + fmtNum(t.g) + ' ইঞ্চি, লম্বা ' + lenText(t) +
+        ' = <b>' + fmtMilli(t.m) + ' ঘনফুট</b></div>';
+    });
+    $('detailTitle').textContent = l.name || 'নাম ছাড়া হিসাব';
+    $('detailBody').innerHTML =
+      '<div class="section"><div class="sec-head">🗓️ ' + fmtDate(l.at) + '</div>' +
+        '<div class="sum-row" style="border-bottom:none">' +
+          '<div class="sum-cell"><div class="sum-label">মোট গাছ</div><div class="sum-val">' + toBn(trees.length) + '</div></div>' +
+          '<div class="sum-cell"><div class="sum-label">মোট কাঠ (ঘনফুট)</div><div class="sum-val">' + fmtMilli(totalMilli(trees)) + '</div></div>' +
+        '</div>' +
+        (p !== null ?
+          '<div class="final-bar" style="margin-bottom:12px"><span class="fb-label">দর ৳ ' + fmtNum(rateOf(l.rate)) +
+          ' · মোট দাম</span><span class="fb-value">৳ ' + fmtInt(p) + '</span></div>' : '') +
+      '</div>' +
+      '<div class="section"><div class="sec-head">📋 গাছের তালিকা</div><div class="detail-lines">' + lines + '</div></div>' +
+      '<button type="button" class="btn-wide btn-history" id="dShare">📤 হিসাব পাঠান (WhatsApp বা SMS)</button>' +
+      '<button type="button" class="btn-wide btn-new" id="dOpen">↩️ এই হিসাবটি আবার খুলুন</button>' +
+      '<button type="button" class="btn-wide btn-danger-outline" id="dDel">🗑️ এই হিসাবটি মুছে ফেলুন</button>';
+    $('dShare').onclick = function () { doShare(shareTextFor({ name: l.name, rate: l.rate, trees: trees }, l.at)); };
+    $('dOpen').onclick = function () { goBack(layers.length, function () { restoreLot(id); }); };
+    $('dDel').onclick = function () {
+      confirmSheet({
+        title: 'হিসাবটি মুছে ফেলবেন?',
+        text: 'এই হিসাবটি একেবারে মুছে যাবে, আর ফেরত আনা যাবে না।',
+        yes: 'হ্যাঁ, মুছে দিন', danger: true,
+        onYes: function () {
+          goBack(2, function () {   // close sheet + detail, stay on the history list
+            var g = findLot(id);
+            if (g) { g.h.splice(g.i, 1); saveHist(g.h); }
+            renderHistory(); renderHistBtn();
+            toast('হিসাবটি মুছে ফেলা হয়েছে');
+          });
+        }
+      });
+    };
+    return true;
+  }
+  function restoreLot(id) {
+    var f = findLot(id); if (!f) return;
+    var h = f.h, lot = h.splice(f.i, 1)[0], kept = false;
+    if (state.trees.length) { h.unshift(makeLot(state)); kept = true; }
+    if (!saveHist(h)) { toast('⚠️ খোলা যায়নি — ফোনে জায়গা কম', { ms: 5000 }); return; }
+    state = { trees: cleanTrees(lot.trees), rate: lot.rate || '', name: lot.name || '' };
+    editIndex = -1;
+    $('rate').value = state.rate; $('lotName').value = state.name;
+    clearForm(); renderAll(); window.scrollTo(0, 0);
+    toast(kept ? '✓ পুরনো হিসাবটি খোলা হয়েছে। এখনকার হিসাবটি "আগের হিসাব"-এ জমা আছে।'
+               : '✓ পুরনো হিসাবটি খোলা হয়েছে', { ms: 4500 });
+  }
+
+  $('historyBtn').addEventListener('click', function () {
+    hideToast();   // never let a message cover the Back button
+    renderHistory();
+    $('viewHistory').classList.add('show'); $('viewHistory').scrollTop = 0;
+    openLayer(function () { $('viewHistory').classList.remove('show'); });
+  });
+  $('histList').addEventListener('click', function (e) {
+    var c = e.target.closest('.hist-card'); if (!c) return;
+    var id = c.getAttribute('data-id');
+    if (!renderDetail(id)) return;
+    detailId = id;
+    $('viewDetail').classList.add('show'); $('viewDetail').scrollTop = 0;
+    openLayer(function () { $('viewDetail').classList.remove('show'); detailId = null; });
   });
 
-  // ── Theme mode ──
-  var themeColors={light:'#1d4ed8',dark:'#0f172a'};
-  function setTheme(theme){
-    var resolved=theme==='dark'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',resolved);
-    try{localStorage.setItem('woodcalc-theme',resolved);}catch(_){}
-    document.getElementById('themeIcon').textContent=resolved==='dark'?'☀️':'🌙';
-    document.getElementById('themeText').textContent=resolved==='dark'?'লাইট':'ডার্ক';
-    var themeMeta=document.querySelector('meta[name="theme-color"]');
-    if(themeMeta)themeMeta.setAttribute('content',themeColors[resolved]);
-  }
-  (function initTheme(){
-    var saved=null;
-    try{saved=localStorage.getItem('woodcalc-theme');}catch(_){}
-    if(saved!=='dark'&&saved!=='light'){
-      saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
-    }
-    setTheme(saved);
-  })();
-  document.getElementById('themeToggle').addEventListener('click',function(){
-    setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+  // ── Install prompt ──
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferredPrompt = e; $('installBar').classList.add('show');
   });
+  $('installBtn').addEventListener('click', function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function () { deferredPrompt = null; $('installBar').classList.remove('show'); });
+  });
+  $('installClose').addEventListener('click', function () { $('installBar').classList.remove('show'); });
+  window.addEventListener('appinstalled', function () { $('installBar').classList.remove('show'); });
 
-  // ── Calculator logic ──
-  var totalWood=0,treeCount=0,currentVal=0,hasUnsaved=false;
-
-  function makeRowHTML(num,v1,v2,wood){
-    return '<div class="step-num">'+num+'</div>'+
-      '<div style="flex:1;font-size:18px;color:var(--muted);font-weight:600;">'+v1+' × '+v2+'</div>'+
-      '<div style="font-size:20px;font-weight:700;color:var(--green);text-align:right;margin-right:6px;">'+parseFloat(wood).toFixed(3)+' ঘনফুট</div>'+
-      '<button onclick="editTree(this)" class="row-action-btn row-action-edit">✏️</button>'+
-      '<button onclick="removeTree(this)" class="row-action-btn row-action-del">✕</button>';
+  // ── Service worker (offline) ──
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
   }
 
-  function onInput(){
-    var r1=document.getElementById('inp1').value.trim();
-    var r2=document.getElementById('inp2').value.trim();
-    var v1=parseFloat(r1),v2=parseFloat(r2);
-    var i1=document.getElementById('inp1'),i2=document.getElementById('inp2');
-    i1.classList.remove('err');i2.classList.remove('err');hideErr();
-    if(r1===''&&r2===''){resetLive();return;}
-    if((!isNaN(v1)&&v1<0)||(!isNaN(v2)&&v2<0)){
-      if(v1<0)i1.classList.add('err');if(v2<0)i2.classList.add('err');
-      showErr('⚠️ মাপ ঋণাত্মক দেওয়া যাবে না।');resetLive();return;
-    }
-    if(r1===''||r2===''){setLive(null,'বাকি ঘর পূরণ করুন');var waitingBtn=document.getElementById('addBtn');waitingBtn.disabled=true;waitingBtn.classList.remove('ready');return;}
-    if(isNaN(v1)||isNaN(v2)){
-      if(isNaN(v1))i1.classList.add('err');if(isNaN(v2))i2.classList.add('err');
-      showErr('⚠️ শুধু সংখ্যা লিখুন।');resetLive();return;
-    }
-    if(v1===0||v2===0){
-      if(v1===0)i1.classList.add('err');if(v2===0)i2.classList.add('err');
-      showErr('⚠️ বেড় বা লম্বা শূন্য হতে পারবে না।');resetLive();return;
-    }
-    currentVal=(v1*v1*v2)/2304;
-    setLive(currentVal);hasUnsaved=true;
-    var addBtn=document.getElementById('addBtn');
-    addBtn.disabled=false;
-    addBtn.classList.add('ready');
-  }
-
-  function setLive(val,ph){
-    var el=document.getElementById('liveVal');
-    if(val===null){el.className='lr-value muted';el.textContent=ph||'— ঘনফুট';}
-    else{el.className='lr-value';el.textContent=val.toFixed(3)+' ঘনফুট';}
-  }
-  function resetLive(){
-    setLive(null);currentVal=0;hasUnsaved=false;
-    var addBtn=document.getElementById('addBtn');
-    addBtn.disabled=true;
-    addBtn.classList.remove('ready');
-  }
-  function showErr(m){var e=document.getElementById('errMsg');e.textContent=m;e.classList.add('show');}
-  function hideErr(){document.getElementById('errMsg').classList.remove('show');}
-
-  function addTree(){
-    if(!hasUnsaved||currentVal<=0)return;
-    var v1=parseFloat(document.getElementById('inp1').value);
-    var v2=parseFloat(document.getElementById('inp2').value);
-    totalWood+=currentVal;treeCount++;
-    var list=document.getElementById('stepsList');
-    var row=document.createElement('div');row.className='step-row';
-    row.dataset.wood=currentVal;row.dataset.v1=v1;row.dataset.v2=v2;
-    row.innerHTML=makeRowHTML(treeCount,v1,v2,currentVal);
-    list.appendChild(row);list.scrollTop=list.scrollHeight;
-    document.getElementById('sumTrees').textContent=treeCount;
-    document.getElementById('sumWood').textContent=totalWood.toFixed(3);
-    document.getElementById('inp1').value='';document.getElementById('inp2').value='';
-    document.getElementById('inp1').classList.remove('err');document.getElementById('inp2').classList.remove('err');
-    hideErr();resetLive();document.getElementById('inp1').focus();calcPrice();
-  }
-
-  function editTree(btn){
-    var row=btn.closest('.step-row');
-    if(row.classList.contains('editing'))return;
-    var oldV1=row.dataset.v1,oldV2=row.dataset.v2,oldWood=row.dataset.wood;
-    var num=row.querySelector('.step-num').textContent;
-    row.classList.add('editing');
-    row.innerHTML=
-      '<div class="step-num">'+num+'</div>'+
-      '<div class="edit-grid">'+
-        '<input type="number" class="e-bed" value="'+oldV1+'" placeholder="বেড়" inputmode="decimal" autocomplete="off">'+
-        '<input type="number" class="e-lom" value="'+oldV2+'" placeholder="লম্বা" inputmode="decimal" autocomplete="off">'+
-      '</div>'+
-      '<div class="edit-actions">'+
-        '<button class="edit-save" onclick="saveEdit(this)">✔ সেভ করুন</button>'+
-        '<button class="edit-cancel" onclick="cancelEdit(this,\''+oldV1+'\',\''+oldV2+'\','+oldWood+')">বাতিল</button>'+
-      '</div>';
-    row.querySelector('.e-bed').focus();
-  }
-
-  function saveEdit(btn){
-    var row=btn.closest('.step-row');
-    var v1=parseFloat(row.querySelector('.e-bed').value);
-    var v2=parseFloat(row.querySelector('.e-lom').value);
-    if(isNaN(v1)||isNaN(v2)||v1<=0||v2<=0){
-      row.querySelector('.e-bed').style.borderColor='var(--red)';
-      row.querySelector('.e-lom').style.borderColor='var(--red)';return;
-    }
-    var oldWood=parseFloat(row.dataset.wood);
-    var newWood=(v1*v1*v2)/2304;
-    totalWood=totalWood-oldWood+newWood;
-    row.dataset.wood=newWood;row.dataset.v1=v1;row.dataset.v2=v2;
-    var num=row.querySelector('.step-num').textContent;
-    row.classList.remove('editing');
-    row.innerHTML=makeRowHTML(num,v1,v2,newWood);
-    document.getElementById('sumWood').textContent=totalWood.toFixed(3);calcPrice();
-  }
-
-  function cancelEdit(btn,oldV1,oldV2,oldWood){
-    var row=btn.closest('.step-row');
-    var num=row.querySelector('.step-num').textContent;
-    row.classList.remove('editing');
-    row.dataset.wood=oldWood;row.dataset.v1=oldV1;row.dataset.v2=oldV2;
-    row.innerHTML=makeRowHTML(num,oldV1,oldV2,oldWood);
-  }
-
-  function removeTree(btn){
-    var row=btn.closest('.step-row');
-    totalWood-=parseFloat(row.dataset.wood);treeCount--;
-    row.remove();
-    document.getElementById('stepsList').querySelectorAll('.step-row').forEach(function(r,i){r.querySelector('.step-num').textContent=i+1;});
-    document.getElementById('sumTrees').textContent=treeCount;
-    document.getElementById('sumWood').textContent=totalWood.toFixed(3);calcPrice();
-  }
-
-  function calcPrice(){
-    var p=parseFloat(document.getElementById('priceInp').value);
-    var el=document.getElementById('finalVal');
-    if(!isNaN(p)&&p>0&&totalWood>0){
-      el.textContent='৳ '+(totalWood*p).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
-    }else{el.textContent='৳ —';}
-  }
-
-  function askClear(){if(treeCount===0)return;document.getElementById('overlay').classList.add('show');}
-  function closeSheet(){document.getElementById('overlay').classList.remove('show');}
-  function doClear(){
-    totalWood=0;treeCount=0;currentVal=0;hasUnsaved=false;
-    ['inp1','inp2','priceInp'].forEach(function(id){var el=document.getElementById(id);el.value='';el.classList.remove('err');});
-    hideErr();resetLive();
-    document.getElementById('stepsList').innerHTML='';
-    document.getElementById('sumTrees').textContent='০';
-    document.getElementById('sumWood').textContent='০.০০০';
-    document.getElementById('finalVal').textContent='৳ —';
-    closeSheet();
-  }
+  // ── Start ──
+  load();
+  $('rate').value = state.rate;
+  $('lotName').value = state.name;
+  renderAll();
+  onMainInput();
+})();
 </script>
 </body>
 </html>
