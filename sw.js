@@ -1,9 +1,10 @@
 // IMPORTANT: change this name (v3, v4 …) every time you upload a new version,
 // otherwise phones keep showing the old app from their cache.
-var CACHE = 'gach-calc-v7';
+var CACHE = 'gach-calc-v8';
 
 var FILES = [
   './index.html',
+  './app.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

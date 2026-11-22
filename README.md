@@ -27,9 +27,9 @@ An offline Bengali calculator that works out the volume of round logs in cubic f
 
 ## Tech
 
-Plain HTML, CSS and JavaScript · Web App Manifest · Service Worker for offline use · [Hind Siliguri](https://fonts.google.com/specimen/Hind+Siliguri) font (SIL Open Font License, see `fonts/OFL-LICENSE.txt`)
+Plain HTML, CSS and JavaScript (code kept in `app.js`, so it runs under a strict Content Security Policy with no inline scripts) · Web App Manifest · Service Worker for offline use · [Hind Siliguri](https://fonts.google.com/specimen/Hind+Siliguri) font (SIL Open Font License, see `fonts/OFL-LICENSE.txt`)
 
-To publish an update, upload all the files and change the cache name in `sw.js` (for example `gach-calc-v7` to `gach-calc-v8`), so installed phones pick up the new version.
+To publish an update, upload all the files and change the cache name in `sw.js` (for example `gach-calc-v8` to `gach-calc-v9`), so installed phones pick up the new version.
 
 ---
 
